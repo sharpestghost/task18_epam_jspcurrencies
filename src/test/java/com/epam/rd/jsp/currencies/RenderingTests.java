@@ -31,6 +31,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -253,9 +254,9 @@ class RenderingTests {
     }
 
     private static File tempResponseXhtmlFile(final String responseXhtml) throws IOException {
-        final File tempHtml = File.createTempFile("jsp-output", ".html");
-        Files.write(tempHtml.toPath(), responseXhtml.getBytes(UTF_8));
-        return tempHtml;
+        final File htmlFile = new File("src/test/resources/rendered/tempHtml.html");
+        Files.write(htmlFile.toPath(), responseXhtml.getBytes(UTF_8));
+        return htmlFile;
     }
 
     private static String executeRequest(final CloseableHttpClient httpClient, final URI uri) throws IOException {
