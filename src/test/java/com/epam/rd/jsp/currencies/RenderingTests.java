@@ -40,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class RenderingTests {
     static {
         System.setProperty("java.awt.headless", "true");
+        System.out.println("isHeadless:" + GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadlessInstance());
     }
 
     @Test
@@ -247,24 +248,16 @@ class RenderingTests {
 
     private static BufferedImage renderPage(final Document respDoc) throws IOException {
 
-        Dimension dim = new Dimension(600, 1000);
+        Dimension dim = new Dimension(500, 250);
 
         BufferedImage image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
-
-        System.out.println("some");
 
         final Graphics2DRenderer renderer = new Graphics2DRenderer();
         renderer.setDocument(respDoc, "");
         renderer.layout(graphics, dim);
         renderer.render(graphics);
 
-        Rectangle rect = renderer.getMinimumSize();
-
-        image = new BufferedImage((int) rect.getWidth(), (int) rect.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        graphics = image.createGraphics();
-        renderer.layout(graphics, rect.getSize());
-        renderer.render(graphics);
         return image;
     }
 
