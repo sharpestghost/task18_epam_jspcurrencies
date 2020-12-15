@@ -249,6 +249,8 @@ class RenderingTests {
         BufferedImage image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics = image.createGraphics();
 
+        System.out.println("some");
+
         final Graphics2DRenderer renderer = new Graphics2DRenderer();
         renderer.setDocument(respDoc, "");
         renderer.layout(graphics, dim);
