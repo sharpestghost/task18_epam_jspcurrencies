@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.simple.Graphics2DRenderer;
+import org.xhtmlrenderer.swing.Java2DRenderer;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -247,18 +248,8 @@ class RenderingTests {
     }
 
     private static BufferedImage renderPage(final Document respDoc) throws IOException {
-
-        Dimension dim = new Dimension(500, 250);
-
-        BufferedImage image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D graphics = image.createGraphics();
-
-        final Graphics2DRenderer renderer = new Graphics2DRenderer();
-        renderer.setDocument(respDoc, "");
-        renderer.layout(graphics, dim);
-        renderer.render(graphics);
-
-        return image;
+        final Java2DRenderer renderer = new Java2DRenderer(respDoc, 500);
+        return renderer.getImage();
     }
 
     private static Document executeRequest(final CloseableHttpClient httpClient, final URI uri) throws IOException {
