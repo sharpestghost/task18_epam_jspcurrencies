@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class CurrenciesBeanTests {
+    static {
+        System.setProperty("java.awt.headless", "true");
+    }
 
     private Currencies currencies;
 

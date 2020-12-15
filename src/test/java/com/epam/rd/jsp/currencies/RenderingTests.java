@@ -38,6 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 class RenderingTests {
+    static {
+        System.setProperty("java.awt.headless", "true");
+    }
 
     @Test
     void testSmall() throws IOException, URISyntaxException {
