@@ -14,11 +14,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.jsoup.helper.W3CDom;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.xhtmlrenderer.simple.ImageRenderer;
+import org.w3c.dom.Document;
+import org.xhtmlrenderer.simple.Graphics2DRenderer;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -31,10 +32,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -201,19 +200,16 @@ class RenderingTests {
                                  final String refImageName) throws URISyntaxException, IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             final URI uri = buildRequestUri(page, params);
-            final String responseXhtml = executeRequest(httpClient, uri);
-            final File tempHtml = tempResponseXhtmlFile(responseXhtml);
+            final Document responseXhtml = executeRequest(httpClient, uri);
+            final BufferedImage rendered = renderPage(responseXhtml);
 
-            final String renderedImagePath = renderPage(tempHtml);
-
-            final double diffPercentage = computeDiff(renderedImagePath, "src/test/resources/ref-img/" + refImageName);
+            final double diffPercentage = computeDiff(rendered, "src/test/resources/ref-img/" + refImageName);
             System.out.println("diff percentage: " + diffPercentage);
-            assertTrue(diffPercentage < 1);
+            assertTrue(diffPercentage < 0.1);
         }
     }
 
-    private static double computeDiff(String renderedPath, String refPath) throws IOException {
-        BufferedImage rendered = ImageIO.read(new File(renderedPath));
+    private static double computeDiff(BufferedImage rendered, String refPath) throws IOException {
         BufferedImage reference = ImageIO.read(new File(refPath));
         int w1 = rendered.getWidth();
         int w2 = reference.getWidth();
@@ -246,20 +242,28 @@ class RenderingTests {
         }
     }
 
-    private static String renderPage(final File tempHtml) throws IOException {
-        final String renderPath = "src/test/resources/rendered/render.png";
-        Files.deleteIfExists(Paths.get(renderPath));
-        ImageRenderer.renderToImage(tempHtml, renderPath, 500);
-        return renderPath;
+    private static BufferedImage renderPage(final Document respDoc) throws IOException {
+
+        Dimension dim = new Dimension(600, 1000);
+
+        BufferedImage image = new BufferedImage(dim.width, dim.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D graphics = image.createGraphics();
+
+        final Graphics2DRenderer renderer = new Graphics2DRenderer();
+        renderer.setDocument(respDoc, "");
+        renderer.layout(graphics, dim);
+        renderer.render(graphics);
+
+        Rectangle rect = renderer.getMinimumSize();
+
+        image = new BufferedImage((int) rect.getWidth(), (int) rect.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        graphics = image.createGraphics();
+        renderer.layout(graphics, rect.getSize());
+        renderer.render(graphics);
+        return image;
     }
 
-    private static File tempResponseXhtmlFile(final String responseXhtml) throws IOException {
-        final File htmlFile = new File("src/test/resources/rendered/tempHtml.html");
-        Files.write(htmlFile.toPath(), responseXhtml.getBytes(UTF_8));
-        return htmlFile;
-    }
-
-    private static String executeRequest(final CloseableHttpClient httpClient, final URI uri) throws IOException {
+    private static Document executeRequest(final CloseableHttpClient httpClient, final URI uri) throws IOException {
         HttpGet httpGet = new HttpGet(uri);
         CloseableHttpResponse response = httpClient.execute(httpGet);
         final String responseText = EntityUtils.toString(response.getEntity()).trim();
@@ -278,17 +282,15 @@ class RenderingTests {
 
         return uriBuilder.build();
     }
-    
-    private static String respXhtml(final String responseText) {
-        final Document respDoc = Jsoup.parse(responseText);
-        respDoc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
-        final String respXml = respDoc.html();
-        return respXml;
+
+    private static Document respXhtml(final String responseText) {
+        W3CDom w3cDom = new W3CDom();
+        return w3cDom.fromJsoup(Jsoup.parse(responseText));
     }
 
     private static void initTestCase(final String testCase) throws IOException {
         Files.copy(
-                Paths.get("src/test/resources/test-cases/"+ testCase + ".txt"),
+                Paths.get("src/test/resources/test-cases/" + testCase + ".txt"),
                 Paths.get("src/test/resources/test-cases/current.txt"),
                 StandardCopyOption.REPLACE_EXISTING);
     }
