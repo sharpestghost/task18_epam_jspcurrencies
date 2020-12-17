@@ -26,8 +26,38 @@ Then implement three JSP pages:
   the intention.
 - `convert.jsp` - renders a phrase representing conversion from given amount of money (param "amount") in source
   currency (param "from") to target currency (param "to").
+  
+Each JSP page must contain a header and one or several phrases.
 
-**Note:** JSP pages are checked via *image rendering*, so it is very important to follow exact style and phrases you may find below.
+**Note:** JSP pages are checked via html analysis, so it is very important to follow notes you may find below.
+
+#### HTML formatting notes
+- Elements
+  - Use `H1` elements for headers.
+  - Use `p` element for enclosing a phrase in `convert.jsp`.
+  - Use unordered lists in `currencies.jsp` and `exchangeRates.jsp`.
+- Headers
+  - `currencies.jsp` header text: "Currencies".
+  - `exchangeRates.jsp` header text: "Exchange Rates for *source_currency*". Replace italic-styled part with an actual value.
+  - `convert.jsp` header text: "Converting *source_currency* to *target_currency*". Replace italic-styled parts with actual values.
+- Phrases
+  - `currencies.jsp` item phrase is just name of a currency.
+  - `exchangeRate.jsp` item phrase: "1 *source_currency* = *exchange_rate* *target_currency*". Replace italic-styled parts with actual values.
+  - `convert.jsp` phrase: "*source amount* *source currency* = *target amount* *target currency*". Replace italic-styled parts with actual values.
+
+#### JSP notes
+- There is a `currencies` bean injected in each jsp page already. Use it to get data.
+- Note, that the `currencies` bean is request scoped. Consider changes, that would occur if there was some other scope.
+- Note, that JSTL tag library is injected as well.
+- Use JSTL tags and JSP expression language instead of plain scriptlets.
+
+#### Recommended Page style
+```css
+body {
+    font-family: "Courier New", serif;
+    font-size: 16pt;
+}
+```
 
 #### Launcher
 There is a [Launcher](src/main/java/com/epam/rd/jsp/currencies/Launcher.java) class.
@@ -36,26 +66,4 @@ Current web app would be automatically deployed there.
 
 When it is started, you may address JSPs via browser, cURL or some other tool.
 
-Note: be sure to execute Maven compilation before launching: `target/classes` is used to build the web app. 
-
-#### Page style
-```css
-body {
-    font-family: "Courier New", serif;
-    font-size: 16pt;
-}
-```
-#### HTML notes
-- Use `H1` elements for headers.
-- Use unordered lists, circle markers.
-- currencies.jsp header text: "Currencies".
-- exchangeRates.jsp header text: "Exchange Rates for *source_currency*". Replace italic-styled part with an actual value.
-- convert.jsp header text: "Convert *source_currency* to *target_currency*". Replace italic-styled parts with actual values.
-- exchangeRate list item phrase: "1 *source_currency* = *exchange_rate* *target_currency*". Replace italic-styled parts with actual values.
-- convert.jsp phrase: "*source amount* *source currency* = *target amount* *target currency*". Replace italic-styled parts with actual values.
-
-#### JSP notes
-- There is a `currencies` bean injected in each jsp page already. Use it to get data.
-- Note, that the `currencies` bean is request scoped. Consider changes, that would occur if there was some other scope.
-- Note, that JSTL tag library is injected as well.
-- Use JSTL tags and JSP expression language instead of plain scriptlets.
+Note: be sure to execute Maven compilation before launching: `target/classes` is used to build the web app.
