@@ -57,10 +57,10 @@ class JspDocTests {
         testExchangeRates(ImmutableMap.of("from", "USD"), "Exchange Rates for USD", "small-er-usd.txt");
         testExchangeRates(ImmutableMap.of("from", "EUR"), "Exchange Rates for EUR", "small-er-eur.txt");
 
-        testConvert(ImmutableMap.of("from", "GBP", "to", "USD", "amount", 36.6), "Converting GBP to USD ", "small-cvt-gbp-usd-366.txt");
-        testConvert(ImmutableMap.of("from", "GBP", "to", "USD", "amount", 123.123), "Converting GBP to USD ", "small-cvt-gbp-usd-123132.txt");
-        testConvert(ImmutableMap.of("from", "GBP", "to", "EUR", "amount", 78.88), "Converting GBP to EUR ", "small-cvt-gbp-usd-7888.txt");
-        testConvert(ImmutableMap.of("from", "EUR", "to", "USD", "amount", 55.5), "Converting EUR to USD ", "small-cvt-eur-usd-555.txt");
+        testConvert(ImmutableMap.of("from", "GBP", "to", "USD", "amount", 36.6), "Converting GBP to USD", "small-cvt-gbp-usd-366.txt");
+        testConvert(ImmutableMap.of("from", "GBP", "to", "USD", "amount", 123.123), "Converting GBP to USD", "small-cvt-gbp-usd-123132.txt");
+        testConvert(ImmutableMap.of("from", "GBP", "to", "EUR", "amount", 78.88), "Converting GBP to EUR", "small-cvt-gbp-usd-7888.txt");
+        testConvert(ImmutableMap.of("from", "EUR", "to", "USD", "amount", 55.5), "Converting EUR to USD", "small-cvt-eur-usd-555.txt");
     }
 
     @Test
@@ -161,13 +161,13 @@ class JspDocTests {
     }
 
     private static void testCurrencies(final String refFileName) throws URISyntaxException, IOException {
-        testCase("currencies.jsp", ImmutableMap.of(), "Currencies", "ul", refFileName);
+        testCase("currencies.jsp", ImmutableMap.of(), "Currencies", "li", refFileName);
     }
 
     private static void testExchangeRates(final ImmutableMap<String, Object> params,
                                           final String expectedHeader,
                                           final String refFileName) throws URISyntaxException, IOException {
-        testCase("exchangeRates.jsp", params, expectedHeader, "ul", refFileName);
+        testCase("exchangeRates.jsp", params, expectedHeader, "li", refFileName);
     }
 
     private static void testConvert(final ImmutableMap<String, Object> params,
@@ -198,6 +198,7 @@ class JspDocTests {
     private static String extractData(final Document responseDoc, final String selector) {
         return responseDoc.select(selector).stream()
                 .map(Element::text)
+                .map(String::strip)
                 .collect(joining("\n"));
     }
 
@@ -207,7 +208,7 @@ class JspDocTests {
 
     private static String readExpected(final String expectedFileName) throws IOException {
         try (final Stream<String> lines = Files.lines(Paths.get("src/test/resources/ref-html/" + expectedFileName))) {
-            return lines.collect(Collectors.joining("\n"));
+            return lines.map(String::strip).collect(Collectors.joining("\n"));
         }
     }
     private static Document executeRequest(final CloseableHttpClient httpClient, final URI uri) throws IOException {
