@@ -20,11 +20,11 @@ adding all the currencies from current test case file.
 
 ### JSP pages
 Then implement three JSP pages:
-- `currencies.jsp` - renders a list of currencies in alphabetical order.
-- `exchangeRates.jsp` - renders a list of all the currencies in alphabetical order paired to their exchange rate to a
+- [`currencies.jsp`](src/main/webapp/currencies.jsp) - renders a list of currencies in alphabetical order.
+- [`exchangeRates.jsp`](src/main/webapp/exchangeRates.jsp) - renders a list of all the currencies in alphabetical order paired to their exchange rate to a
   currency given as a param (named "from"). Note, that a currency given as a param must be excluded from the list: it is
   the intention.
-- `convert.jsp` - renders a phrase representing conversion from given amount of money (param "amount") in source
+- [`convert.jsp`](src/main/webapp/convert.jsp) - renders a phrase representing conversion from given amount of money (param "amount") in source
   currency (param "from") to target currency (param "to").
   
 Each JSP page must contain a header and one or several phrases.
