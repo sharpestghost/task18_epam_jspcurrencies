@@ -6,6 +6,8 @@ import java.util.*;
 
 public class Currencies {
     private final Map<String, BigDecimal> currenciesData = new TreeMap<>();
+    private static final int SCALE = 5;
+    private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_UP;
     public void addCurrency(String currency, BigDecimal weight) {
         currenciesData.put(currency, weight);
     }
@@ -18,12 +20,13 @@ public class Currencies {
         Map<String, BigDecimal> newMap = new TreeMap<>();
         if (currenciesData.containsKey(referenceCurrency)) {
             currenciesData.forEach((String key, BigDecimal element) -> newMap.put(key,
-                    currenciesData.get(referenceCurrency).divide(element,5,RoundingMode.HALF_UP)));
+                    currenciesData.get(referenceCurrency).divide(element,SCALE,DEFAULT_ROUNDING)));
         }
         return newMap;
     }
     public BigDecimal convert(BigDecimal amount, String sourceCurrency, String targetCurrency) {
-        return currenciesData.get(sourceCurrency).multiply(amount).divide(currenciesData.get(targetCurrency),5,RoundingMode.HALF_UP);
+        return currenciesData.get(sourceCurrency).multiply(amount).
+                divide(currenciesData.get(targetCurrency),SCALE,DEFAULT_ROUNDING);
     }
 
 }
