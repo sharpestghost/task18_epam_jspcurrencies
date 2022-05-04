@@ -10,6 +10,10 @@
 <header class="page-header">
     <h1>Currencies</h1>
 </header>
-
+<ul>
+    <li>
+<%= currencies.listToString() %>
+    </li>
+</ul>
 </body>
 </html>

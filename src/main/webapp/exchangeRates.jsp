@@ -10,6 +10,10 @@
 <header>
 <h1> Exchange Rates for ${param.from}
 </header>
-
+<ul>
+    <li>
+<%= currencies.mapToString(request.getParameter("from")).toString() %>
+    </li>
+<ul>
 </body>
 </html>

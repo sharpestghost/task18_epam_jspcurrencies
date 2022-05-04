@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class Currencies {
-    private final Map<String, BigDecimal> currenciesData = new TreeMap<>();
     private static final int SCALE = 5;
     private static final RoundingMode DEFAULT_ROUNDING = RoundingMode.HALF_UP;
+    private final Map<String, BigDecimal> currenciesData = new TreeMap<>();
 
     public void addCurrency(String currency, BigDecimal weight) {
         currenciesData.put(currency, weight);
