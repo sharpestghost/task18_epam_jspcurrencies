@@ -6,3 +6,8 @@
 <%@ page import="java.util.*, java.text.*, com.epam.rd.jsp.currencies.CurrenciesOfCurrentTestCase" %>
 
 <jsp:useBean id="currencies" class="com.epam.rd.jsp.currencies.CurrenciesOfCurrentTestCase" scope="request"/>
+<body>
+<header>
+<h1> Converting ${param.from} to ${param.to}
+</header>
+</body>

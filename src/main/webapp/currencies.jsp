@@ -6,3 +6,10 @@
 <%@ page import="java.util.*, java.text.*, com.epam.rd.jsp.currencies.CurrenciesOfCurrentTestCase" %>
 
 <jsp:useBean id="currencies" class="com.epam.rd.jsp.currencies.CurrenciesOfCurrentTestCase" scope="request"/>
+<body>
+<header class="page-header">
+    <h1>Currencies</h1>
+</header>
+
+</body>
+</html>
