@@ -5,11 +5,15 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class CurrenciesOfCurrentTestCase extends Currencies {
+    private static final Logger LOGGER = Logger.getGlobal();
+
     public CurrenciesOfCurrentTestCase() {
         final Path testCasePath = Paths.get("src", "test", "resources", "test-cases", "current.txt");
         try (Stream<String> lines = Files.lines(testCasePath, UTF_8)) {
@@ -17,7 +21,7 @@ public class CurrenciesOfCurrentTestCase extends Currencies {
                     .map(line -> line.split("\\s"))
                     .forEach(tokens -> addCurrency(tokens[0], new BigDecimal(tokens[1])));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "RuntimeException", e);
         }
     }
 }
